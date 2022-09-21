@@ -1,17 +1,17 @@
-IDIR =../include
+#IDIR =../include
 CC=gcc
-CFLAGS=-I$(IDIR)
+CFLAGS=-I. #$(IDIR)
 
 ODIR=obj
-LDIR =../lib
+#LDIR =../lib
 
-LIBS=-lm
+#LIBS=-lm
 
-_DEPS = header.h
-DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
+DEPS = header.h
+#DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = main.o source.o
-OBJ = $(patsubst %,$(ODIR)%,$(_OBJ))
+OBJ = main.o source.o
+#OBJ = $(patsubst %,$(ODIR)%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
