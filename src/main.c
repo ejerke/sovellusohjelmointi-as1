@@ -2,18 +2,7 @@
  * Mockup for ELEC-C7310 assignment 1.
  * This only writes data directly without doing a data transfer between processes.
  */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <fcntl.h>
 #include "header.h"
-
-#define BLOCKSIZE 4096
-
-
-
 
 int main(int argc,char **argv) {
     int ifd, ofd;
@@ -54,6 +43,15 @@ int main(int argc,char **argv) {
         return -1;
     }
     Printer();
+
+    pid_t  child_pid;
+
+     child_pid = fork();
+     if (child_pid == 0) 
+          ChildProcess();
+     else 
+          ParentProcess(child_pid);
+
     // Allocate buffer
     char *buf = malloc(BLOCKSIZE);
     if (buf == NULL) return -1;

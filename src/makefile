@@ -2,24 +2,24 @@
 CC=gcc
 CFLAGS=-I. #$(IDIR)
 
-ODIR=obj
+ODIR=./
 #LDIR =../lib
 
 #LIBS=-lm
 
-DEPS = header.h
-#DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
+_DEPS = header.h
+DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-OBJ = main.o source.o
-#OBJ = $(patsubst %,$(ODIR)%,$(_OBJ))
+_OBJ = main.o source.o
+OBJ = $(patsubst %,$(ODIR)%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-aja: $(OBJ)
+run: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~
+	rm -f ./*.o *~ core $(INCDIR)/*~
