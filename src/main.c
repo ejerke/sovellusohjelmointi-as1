@@ -43,18 +43,45 @@ int main(int argc,char **argv) {
         return -1;
     }
 
-    pid_t  child_pid;
 
     // Divide the program into two processes,
     // exec to run appropriate subprocess.
+    pid_t  child_pid = 0;
+    child_pid = fork();
+    printf("forkki tehty\n");
 
-    // char* server = "./server";
+    if (child_pid == 0)
+    {
 
-     child_pid = fork();
-     if (child_pid == 0) 
-        ChildProcess();
-     else 
-        ParentProcess(child_pid, ifd, ofd);
+    char* client_exec = "client";
+    char* client_args[] = {""};
+    printf("childi lähtee ny\n");
+
+    execvp(client_exec, client_args);
+    // ChildProcess();
+    }
+    else 
+    {
+    // Prepare the parameters for exec
+    char* server_exec = "server";
+
+    char cpid_str[16];
+    snprintf(cpid_str, sizeof(cpid_str), "%d", child_pid);
+
+    char ifd_str[16];
+    char ofd_str[16];
+
+    snprintf(ifd_str, sizeof(ifd_str), "%d", ifd);
+    snprintf(ofd_str, sizeof(ofd_str), "%d", ofd);
+    
+
+    char* server_args[] = {cpid_str, ifd_str, ofd_str};
+
+    printf("parentti lähtee ny\n");
+
+    execvp(server_exec, server_args);
+    // ParentProcess(child_pid, ifd, ofd);
+    }
 
     return 0;
 }

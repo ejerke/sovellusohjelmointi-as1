@@ -17,9 +17,9 @@
 
 // FUNCTION DEFINITIONS
 
-void ChildProcess();
+// int ChildProcess();
 
-void ParentProcess();
+// int ParentProcess();
 
 void sighandler_client(int);
 

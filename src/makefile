@@ -11,7 +11,10 @@ IDIR =../include
 
 # List all .h and .c files
 _DEPS = header.h
-_OBJ = main.o source.o server.o client.o
+_OBJ = main.o source.o
+_OBJ_SERVER = server.o source.o
+_OBJ_CLIENT = client.o source.o
+
 
 # Create directories for the header files
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
@@ -19,24 +22,31 @@ DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 # Create the directories for object files
 # using the object file list and object dir
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+OBJ_SERVER = $(patsubst %,$(ODIR)/%,$(_OBJ_SERVER))
+OBJ_CLIENT = $(patsubst %,$(ODIR)/%,$(_OBJ_CLIENT))
 
 # Create dependencies between the .o, .c and .h files
 $(ODIR)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
+
+# Compile everything.
+.PHONY: all
+
+all: main server client
 
 # Compile command for main
 main: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 # Compile command for server
-server: server.o source.o
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+server: $(OBJ_SERVER)
+	$(CC) -o server $^ $(CFLAGS) $(LIBS)
 
 # Compile command for client
-client: client.o source.o
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+client: $(OBJ_CLIENT)
+	$(CC) -o client $^ $(CFLAGS) $(LIBS)
 
 # clean
 .PHONY: clean
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~
+	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ main server client

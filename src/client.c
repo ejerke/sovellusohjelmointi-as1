@@ -8,8 +8,9 @@ static int signal_array[5] = {
 	SIGUSR2,
 };
 
-void  ChildProcess(void)
+int main()
 {
+    printf("in client!!");
     int   i;
 	int   s = 0;
 
@@ -21,12 +22,37 @@ void  ChildProcess(void)
 
     for (i = 1; i <= MAX_COUNT; i++)
 	{
-        printf("   This line is from child, value = %d\n", i);
+        printf("   from child, value = %d\n", i);
 		delay(20000);
 	}
-	delay(30000);
+
+    while (1)
+        delay(100);
+
     printf("   *** Child process is done ***\n");
+    return(0);
 }
+
+// int ChildProcess(void)
+// {
+//     int   i;
+// 	int   s = 0;
+
+// 	// Start listening to signals listed in signal_array
+// 	while (s++ < sizeof(signal_array))
+// 		signal(signal_array[s], sighandler_client);
+
+// 	delay(1000);
+
+//     for (i = 1; i <= MAX_COUNT; i++)
+// 	{
+//         printf("   This line is from child, value = %d\n", i);
+// 		delay(20000);
+// 	}
+// 	delay(30000);
+//     printf("   *** Child process is done ***\n");
+//     return(0);
+// }
 
 // Handle signals sent by parent to child
 void sighandler_client(int sig)
