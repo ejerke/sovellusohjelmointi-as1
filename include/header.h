@@ -12,16 +12,15 @@
 
 // CONSTANT DEFINITIONS
 #define BLOCKSIZE 4096
-#define MAX_COUNT 10
+#define MAX_COUNT 5
 
 
 // FUNCTION DEFINITIONS
-void Printer();
 
 void ChildProcess();
 
 void ParentProcess();
 
-void sighandler(int);
+void sighandler_client(int);
 
 void delay(int seconds);

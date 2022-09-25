@@ -42,36 +42,17 @@ int main(int argc,char **argv) {
         fprintf(stderr,"Usage: %s [input|-] [output|-]\n",argv[0]);
         return -1;
     }
-    Printer();
 
     pid_t  child_pid;
 
+    // Divide the program into two processes,
+    // exec to choose appropriate subprocess.
+
      child_pid = fork();
      if (child_pid == 0) 
-          ChildProcess();
+        ChildProcess();
      else 
-          ParentProcess(child_pid);
-
-    // Allocate buffer
-    char *buf = malloc(BLOCKSIZE);
-    if (buf == NULL) return -1;
-    while (1) {
-        int s;
-        s = read(ifd,buf,BLOCKSIZE);
-        if (s < 0) return -1;
-        if (s == 0) break; // input closed
-        int r = 0;
-        while (r < s) {
-            int t = write(ofd,buf+r,s-r);
-            if (t < 0) {
-                return -1;
-            }
-            r += t;
-        }
-    }
-    free(buf);
-    close(ifd);
-    close(ofd);
+        ParentProcess(child_pid, ifd, ofd);
 
     return 0;
 }
