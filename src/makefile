@@ -24,8 +24,16 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 $(ODIR)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-# Compile command
-run: $(OBJ)
+# Compile command for main
+main: $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+# Compile command for server
+server: server.o source.o
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+# Compile command for client
+client: client.o source.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 # clean

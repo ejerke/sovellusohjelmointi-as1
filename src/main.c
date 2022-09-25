@@ -46,7 +46,9 @@ int main(int argc,char **argv) {
     pid_t  child_pid;
 
     // Divide the program into two processes,
-    // exec to choose appropriate subprocess.
+    // exec to run appropriate subprocess.
+
+    // char* server = "./server";
 
      child_pid = fork();
      if (child_pid == 0) 
