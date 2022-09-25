@@ -2,7 +2,6 @@
 
 int main(int argc, char **argv)
 {
-    printf("in server!!");
     int child_pid, ifd, ofd;
     if ( argc < 3 )
         return(-1);
@@ -27,8 +26,7 @@ int main(int argc, char **argv)
 		// SEND SIGNAL TO CHILD
 		if (buf[0] == '1') kill(child_pid, SIGUSR1);
 		if (buf[0] == '2') kill(child_pid, SIGUSR2);
-		if (buf[0] == 'k') kill(child_pid, SIGTERM);
-		if (buf[0] == 'p') kill(child_pid, SIGCONT);
+		if (buf[0] == '3') kill(child_pid, SIGALRM);
 
 		// continue normally
         while (r < s) {

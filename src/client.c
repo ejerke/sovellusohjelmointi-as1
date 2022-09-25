@@ -1,16 +1,15 @@
 #include "header.h"
 
-static int signal_array[5] = {
-	SIGINT,
-	SIGTERM,
-	SIGCONT,
+static int signal_array[3] = {
+	// SIGINT,
+	// SIGTERM,
+	SIGALRM,
 	SIGUSR1,
 	SIGUSR2,
 };
 
 int main()
 {
-    printf("in client!!");
     int   i;
 	int   s = 0;
 
@@ -18,16 +17,15 @@ int main()
 	while (s++ < sizeof(signal_array))
 		signal(signal_array[s], sighandler_client);
 
-	delay(1000);
-
     for (i = 1; i <= MAX_COUNT; i++)
 	{
         printf("   from child, value = %d\n", i);
-		delay(20000);
+		delay(20);
 	}
 
+    // Wait for more input until server exits.
     while (1)
-        delay(100);
+        ;
 
     printf("   *** Child process is done ***\n");
     return(0);
@@ -57,22 +55,16 @@ int main()
 // Handle signals sent by parent to child
 void sighandler_client(int sig)
 {
-	printf("\n\nIN SIG HANDLER\n\n");
 	switch(sig)
 	{
-		case SIGCONT:
-			printf("\n\nCONTINUE\n\n");
+		case SIGALRM:
+			printf(" -> space received\n");
 			break;
 		case SIGUSR1:
-			printf(" -> 1 registered\n");
+			printf(" -> short received\n");
 			break;
 		case SIGUSR2:
-			printf(" -> 2 registered\n");
+			printf(" -> long received\n");
 			break;
-		//KILL
-		case SIGINT:
-		case SIGTERM:
-			exit(0);
-	}
-		
+	}	
 }

@@ -53,35 +53,37 @@ int main(int argc,char **argv) {
     if (child_pid == 0)
     {
 
-    char* client_exec = "client";
-    char* client_args[] = {""};
-    printf("childi lähtee ny\n");
+        char* client_exec = "./client";
+        char* client_args[] = {"", NULL};
+        printf("childi lähtee ny\n");
 
-    execvp(client_exec, client_args);
-    // ChildProcess();
+        execv(client_exec, client_args);
+        // ChildProcess();
     }
-    else 
+    else if ( child_pid != -1 ) 
     {
-    // Prepare the parameters for exec
-    char* server_exec = "server";
+        // Prepare the parameters for exec
+        char* server_exec = "./server";
 
-    char cpid_str[16];
-    snprintf(cpid_str, sizeof(cpid_str), "%d", child_pid);
+        char cpid_str[16];
+        snprintf(cpid_str, sizeof(cpid_str), "%d", child_pid);
 
-    char ifd_str[16];
-    char ofd_str[16];
+        char ifd_str[16];
+        char ofd_str[16];
 
-    snprintf(ifd_str, sizeof(ifd_str), "%d", ifd);
-    snprintf(ofd_str, sizeof(ofd_str), "%d", ofd);
-    
+        snprintf(ifd_str, sizeof(ifd_str), "%d", ifd);
+        snprintf(ofd_str, sizeof(ofd_str), "%d", ofd);
+        
 
-    char* server_args[] = {cpid_str, ifd_str, ofd_str};
+        char* server_args[] = {cpid_str, ifd_str, ofd_str, NULL};
 
-    printf("parentti lähtee ny\n");
+        printf("parentti lähtee ny\n");
 
-    execvp(server_exec, server_args);
-    // ParentProcess(child_pid, ifd, ofd);
+        execv(server_exec, server_args);
+        // ParentProcess(child_pid, ifd, ofd);
     }
+    else
+        printf("error in forking\n");
 
     return 0;
 }

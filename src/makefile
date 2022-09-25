@@ -32,10 +32,10 @@ $(ODIR)/%.o: %.c $(DEPS)
 # Compile everything.
 .PHONY: all
 
-all: main server client
+all: start server client
 
-# Compile command for main
-main: $(OBJ)
+# Compile command for start
+start: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 # Compile command for server
@@ -49,4 +49,4 @@ client: $(OBJ_CLIENT)
 # clean
 .PHONY: clean
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ main server client
+	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ start server client
