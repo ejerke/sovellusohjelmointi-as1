@@ -1,14 +1,11 @@
 #include "header.h"
 
-void delay(int number_of_seconds)
-{
-    // Converting time into milli_seconds
-    int milli_seconds = 1000 * number_of_seconds;
- 
+void delay_micro(int micro_seconds)
+{ 
     // Storing start time
     clock_t start_time = clock();
  
     // looping till required time is achieved
-    while (clock() < start_time + milli_seconds)
+    while (clock() < start_time + micro_seconds)
         ;
 }

@@ -29,56 +29,82 @@ char* morseEncode(char x)
     // Return morse based on char
     switch (x) {
     case 'a':
+    case 'A':
         return ".-";
     case 'b':
+    case 'B':
         return "-...";
     case 'c':
+    case 'C':
         return "-.-.";
     case 'd':
+    case 'D':
         return "-..";
     case 'e':
+    case 'E':
         return ".";
     case 'f':
+    case 'F':
         return "..-.";
     case 'g':
+    case 'G':
         return "--.";
     case 'h':
+    case 'H':
         return "....";
     case 'i':
+    case 'I':
         return "..";
     case 'j':
+    case 'J':
         return ".---";
     case 'k':
+    case 'K':
         return "-.-";
     case 'l':
+    case 'L':
         return ".-..";
     case 'm':
+    case 'M':
         return "--";
     case 'n':
+    case 'N':
         return "-.";
     case 'o':
+    case 'O':
         return "---";
     case 'p':
+    case 'P':
         return ".--.";
     case 'q':
+    case 'Q':
         return "--.-";
     case 'r':
+    case 'R':
         return ".-.";
     case 's':
+    case 'S':
         return "...";
     case 't':
+    case 'T':
         return "-";
     case 'u':
+    case 'U':
         return "..-";
     case 'v':
+    case 'V':
         return "...-";
     case 'w':
+    case 'W':
         return ".--";
     case 'x':
+    case 'X':
         return "-..-";
     case 'y':
+    case 'Y':
         return "-.--";
     case 'z':
+    case 'Z':
         return "--..";
     case '1':
         return ".----";
@@ -100,6 +126,18 @@ char* morseEncode(char x)
         return "----.";
     case '0':
         return "-----";
+
+    // User defined characters, also need to be implemented
+    // separately to client-side.
+
+    // every encoded '_' means one sent SIG_ALRM, also the function
+    // sendCharOfMorse always adds one SIG_ALRM to the end of a char
+    case ' ': 
+        return "_";
+    case '.':
+        return "__";
+    case ',':
+        return "___";
     default:
         printf("Found invalid character\n");
         return(0);
@@ -128,14 +166,19 @@ int sendCharInMorse(char a, pid_t target)
             kill(target, SIGUSR2);
             break;
 
+        case '_':
+            kill(target, SIGALRM);
+            break;
+
         default:
             break;
         }
         i++;
-        delay(100);
+        delay_micro(DEFAULT_KILL_DELAY);
 
     }
-
+    kill(target, SIGALRM); // Send always at least character end.
+    delay_micro(END_KILL_DELAY);
     return(0);
 }
 

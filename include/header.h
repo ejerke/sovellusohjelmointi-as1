@@ -12,8 +12,8 @@
 
 // CONSTANT DEFINITIONS
 #define BLOCKSIZE 4096
-#define MAX_COUNT 5
-
+#define DEFAULT_KILL_DELAY 100
+#define END_KILL_DELAY 1000
 
 // FUNCTION DEFINITIONS
 
@@ -27,4 +27,4 @@ int sendCharInMorse(char a, pid_t target);
 
 void sighandler_client(int);
 
-void delay(int seconds);
+void delay_micro(int seconds);

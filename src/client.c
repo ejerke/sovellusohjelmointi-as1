@@ -11,7 +11,7 @@ static int received[1024];
 
 int main()
 {
-    int   i;
+	// pid_t parent_id = getppid();
 	memset(received, 0, sizeof(received));
 	// Start listening to signals listed in signal_array
     // exec to run appropriate subprocess(server/client).
@@ -24,44 +24,18 @@ int main()
 	sigaction(SIGUSR2, &act, NULL);
 	sigaction(SIGALRM, &act, NULL);
 
+    printf("   *** Child process is ready ***\n");
 	// int   s = 0;
 	// while (s++ < sizeof(signal_array))
 	// 	signal(signal_array[s], sighandler_client);
 
-    for (i = 1; i <= MAX_COUNT; i++)
-	{
-        printf("   from child, value = %d\n", i);
-		delay(1);
-	}
-
     // Wait for more input until server exits.
     while (1)
-        pause();
+        ;
 
     printf("   *** Child process is done ***\n");
     return(0);
 }
-
-// int ChildProcess(void)
-// {
-//     int   i;
-// 	int   s = 0;
-
-// 	// Start listeningmainmain to signals listed in signal_array
-// 	while (s++ < sizeof(signal_array))
-// 		signal(signal_array[s], sighandler_client);
-
-// 	delay(1000);
-
-//     for (i = 1; i <= MAX_COUNT; i++)
-// 	{
-//         printf("   This line is from child, value = %d\n", i);
-// 		delay(20000);
-// 	}
-// 	delay(30000);
-//     printf("   *** Child process is done ***\n");
-//     return(0);
-// }
 
 // Handle signals sent by parent to child
 void sighandler_client(int sig)
