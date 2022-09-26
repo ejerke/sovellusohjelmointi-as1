@@ -9,10 +9,6 @@ int main(int argc, char **argv)
     ifd =       strtol(argv[1], NULL, 10);
     ofd =       strtol(argv[2], NULL, 10);
 
-	printf("childs id %d\n", child_pid);
-	delay(1);
-	kill(SIGINT, child_pid);
-
     // Allocate buffer
     char *buf = malloc(BLOCKSIZE);
     if (buf == NULL) return(0);
@@ -41,7 +37,6 @@ int main(int argc, char **argv)
     close(ifd);
     close(ofd);
 
-    printf("*** Parent is done ***\n");
 	kill(child_pid, SIGTERM);
 }
 

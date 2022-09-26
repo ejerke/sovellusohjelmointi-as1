@@ -42,10 +42,15 @@ int main(int argc,char **argv) {
         fprintf(stderr,"Usage: %s [input|-] [output|-]\n",argv[0]);
         return -1;
     }
+    // pause()
+    // sigset_t
+    // sigaction()
+    // sig(timed)wait()
+    // async-signal-safe functions
 
 
     // Divide the program into two processes,
-    // exec to run appropriate subprocess.
+    // exec to run appropriate subprocess(server/client).
     pid_t  child_pid = 0;
     child_pid = fork();
     printf("forkki tehty\n");
