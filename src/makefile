@@ -1,6 +1,6 @@
 # Compiler version and flags
 CC=gcc
-CFLAGS=-Wall -pedantic -I $(IDIR)
+CFLAGS= -std=gnu99 -Wall -pedantic -I $(IDIR)
 
 # Directories
 ODIR=./obj
@@ -11,9 +11,9 @@ IDIR =../include
 
 # List all .h and .c files
 _DEPS = header.h
-_OBJ = main.o source.o
-_OBJ_SERVER = server.o source.o
-_OBJ_CLIENT = client.o source.o
+_OBJ = start.o source.o
+_OBJ_SERVER = server.o source.o morse.o
+_OBJ_CLIENT = client.o source.o morse.o
 
 
 # Create directories for the header files
@@ -31,7 +31,6 @@ $(ODIR)/%.o: %.c $(DEPS)
 
 # Compile everything.
 .PHONY: all
-
 all: start server client
 
 # Compile command for start

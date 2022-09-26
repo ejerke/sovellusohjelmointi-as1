@@ -1,6 +1,5 @@
 /**
- * Mockup for ELEC-C7310 assignment 1.
- * This only writes data directly without doing a data transfer between processes.
+ * Mockup transfer between processes.
  */
 #include "header.h"
 
@@ -53,7 +52,6 @@ int main(int argc,char **argv) {
     // exec to run appropriate subprocess(server/client).
     pid_t  child_pid = 0;
     child_pid = fork();
-    printf("forkki tehty\n");
 
     if (child_pid == 0)
     {

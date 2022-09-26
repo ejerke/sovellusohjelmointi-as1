@@ -21,6 +21,10 @@
 
 // int ParentProcess();
 
+char* morseEncode(char a);
+
+int sendCharInMorse(char a, pid_t target);
+
 void sighandler_client(int);
 
 void delay(int seconds);
