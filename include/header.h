@@ -13,18 +13,16 @@
 // CONSTANT DEFINITIONS
 #define BLOCKSIZE 4096
 #define DEFAULT_KILL_DELAY 100
-#define END_KILL_DELAY 1000
+#define END_KILL_DELAY 400
 
 // FUNCTION DEFINITIONS
 
-// int ChildProcess();
+char* morseEncode(char);
 
-// int ParentProcess();
+int sendCharInMorse(char, pid_t);
 
-char* morseEncode(char a);
-
-int sendCharInMorse(char a, pid_t target);
+char readCharOfMorse(void);
 
 void sighandler_client(int);
 
-void delay_micro(int seconds);
+void delay_micro(int);

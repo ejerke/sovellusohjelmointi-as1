@@ -61,7 +61,6 @@ int main(int argc,char **argv) {
         printf("childi lähtee ny\n");
 
         execv(client_exec, client_args);
-        // ChildProcess();
     }
     else if ( child_pid != -1 ) 
     {
@@ -83,7 +82,6 @@ int main(int argc,char **argv) {
         printf("parentti lähtee ny\n");
 
         execv(server_exec, server_args);
-        // ParentProcess(child_pid, ifd, ofd);
     }
     else
         printf("error in forking\n");

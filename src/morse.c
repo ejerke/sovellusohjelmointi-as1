@@ -9,16 +9,7 @@
  * morse '.' corrseponds to signal SIGUSR1
  * morse '-' corrseponds to signal SIGUSR2
  * 
- * The rest of the morse (mainly the gaps)
- * are implemented with signal SIGALRM
- * 
- * 1x means space between characters
- * 2x means space between words
- * 3x means space between sentences (a dot)
- * 4x ??
- * 
- * 
- * 8x means an error (mostly from client to server) ??
+ * SIGALRM means that the previously sent signals can be calculated.
  * 
  * 
 */
@@ -133,23 +124,32 @@ char* morseEncode(char x)
     // every encoded '_' means one sent SIG_ALRM, also the function
     // sendCharOfMorse always adds one SIG_ALRM to the end of a char
     case ' ': 
-        return "_";
+        return "..--.";
+    case '=':
+        return "-...-";
+    case '+':
+        return ".-.-.";
+    case '-':
+        return ".-.--";
     case '.':
-        return "__";
+        return ".-...";
     case ',':
-        return "___";
+        return ".-..-";
+    case '_':
+        return ".--..";
+
+    // Send an underscore for a character that is not implemented.
     default:
-        printf("Found invalid character\n");
-        return(0);
+        printf("---- CHAR: '%c' not implemented\n", x);
+        return ".--..";
     }
+
 }
 
 int sendCharInMorse(char a, pid_t target)
 {
-    // assert( a == '.' || a == '-' );
-
-    char to_send[5];
-    to_send[4] = 0;
+    char to_send[6];
+    memset(to_send, 0, 6);
     strcpy(to_send, morseEncode(a));
     int i = 0;
 
@@ -164,10 +164,6 @@ int sendCharInMorse(char a, pid_t target)
         
         case '-':
             kill(target, SIGUSR2);
-            break;
-
-        case '_':
-            kill(target, SIGALRM);
             break;
 
         default:

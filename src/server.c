@@ -27,7 +27,7 @@ int main(int argc, char **argv)
         
 		// continue normally
         while ( r < s &&  buf[r] != '\n' ) {
-            printf("going to send char %c\n", buf[r]);
+            // printf("going to send char %c\n", buf[r]);
             sendCharInMorse(buf[r], child_pid);
 
             // int t = write(ofd,buf+r,s-r);
