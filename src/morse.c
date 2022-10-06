@@ -1,6 +1,6 @@
 #include "header.h"
 #include <assert.h>
-
+#include <string.h>
 /**
  * 
  * Functions needed to convert between characters
@@ -13,7 +13,6 @@
  * 
  * 
 */
-
 
 char* morseEncode(char x)
 {
@@ -137,6 +136,8 @@ char* morseEncode(char x)
         return ".-..-";
     case '_':
         return ".--..";
+    case '\n':
+        return "---.-";
 
     // Send an underscore for a character that is not implemented.
     default:
@@ -164,9 +165,6 @@ int sendCharInMorse(char a, pid_t target)
         
         case '-':
             kill(target, SIGUSR2);
-            break;
-
-        default:
             break;
         }
         i++;

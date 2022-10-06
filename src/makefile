@@ -19,7 +19,7 @@ _OBJ_CLIENT = client.o source.o morse.o
 # Create directories for the header files
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-# Create the directories for object files
+# Create the directory lists for object files
 # using the object file list and object dir
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 OBJ_SERVER = $(patsubst %,$(ODIR)/%,$(_OBJ_SERVER))

@@ -47,40 +47,36 @@ int main(int argc,char **argv) {
     // sig(timed)wait()
     // async-signal-safe functions
 
-
     // Divide the program into two processes,
-    // exec to run appropriate subprocess(server/client).
+    // exec to run appropriate process(server/client).
     pid_t  child_pid = 0;
     child_pid = fork();
 
-    if (child_pid == 0)
+    if (child_pid == 0) // In child
     {
-
-        char* client_exec = "./client";
-        char* client_args[] = {"", NULL};
-        printf("childi lähtee ny\n");
-
-        execv(client_exec, client_args);
-    }
-    else if ( child_pid != -1 ) 
-    {
-        // Prepare the parameters for exec
-        char* server_exec = "./server";
-
-        char cpid_str[16];
-        snprintf(cpid_str, sizeof(cpid_str), "%d", child_pid);
-
-        char ifd_str[16];
+        char client_exec[] = "./client";
         char ofd_str[16];
 
-        snprintf(ifd_str, sizeof(ifd_str), "%d", ifd);
         snprintf(ofd_str, sizeof(ofd_str), "%d", ofd);
-        
 
-        char* server_args[] = {cpid_str, ifd_str, ofd_str, NULL};
+        char* client_args[] = {ofd_str, NULL};
+
+        printf("childi lähtee ny\n");
+        execv(client_exec, client_args);
+    }
+    else if ( child_pid != -1 ) // In parent
+    {
+        // Prepare the parameters for exec
+        char server_exec[] = "./server";
+        char cpid_str[16];
+        char ifd_str[16];
+
+        snprintf(cpid_str, sizeof(cpid_str), "%d", child_pid);
+        snprintf(ifd_str, sizeof(ifd_str), "%d", ifd);
+
+        char* server_args[] = {cpid_str, ifd_str, NULL};
 
         printf("parentti lähtee ny\n");
-
         execv(server_exec, server_args);
     }
     else

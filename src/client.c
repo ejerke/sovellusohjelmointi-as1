@@ -7,19 +7,21 @@
 // 	SIGUSR1,
 // 	SIGUSR2,
 // };
-static char text[1024];
+static char text[BLOCKSIZE];
 static int text_i;
 
-static const char *letter = "**ETIANMSURWDKGOHVF?L?PJBXCYZQ??54$3?? 2.,+-_??16=/?????7???8?90";
-
+static const char *letter = "**ETIANMSURWDKGOHVF?L?PJBXCYZQ??54$3?? 2.,+-_??16=/?????7???8\n90";
 
 static volatile int char_index = 1;
 static volatile int char_ready = 0;
 
-int main()
+int main(int argc, char **argv)
 {
 	// pid_t parent_id = getppid();
 	memset(text, 0, sizeof(text));
+
+    int ofd = strtol(argv[2], NULL, 10);
+
 	// Start listening to signals listed in signal_array
     // exec to run appropriate subprocess(server/client).
 	struct sigaction act;
@@ -32,27 +34,34 @@ int main()
 	sigaction(SIGALRM, &act, NULL);
 
     printf("   *** Child process is ready ***\n");
-	// int   s = 0;
-	// while (s++ < sizeof(signal_array))
-	// 	signal(signal_array[s], sighandler_client);
 
     // Wait for more input until server exits.
     while (1)
+	{
 		if (char_ready)
 		{
 			text[text_i] = readCharOfMorse();
-			if ( text[text_i] == '_')
-				printf("total:%s\n", text);
+
+			if ( text[text_i] == '\n')
+			{
+				// printf("received a complete line, text now:\n");
+				// printf("%s\n", text);
+				if ( write(ofd, text, BLOCKSIZE) == -1 )
+					printf("didnt write\n");
+			}
 			text_i++;
 		}
+	}
 
-
-    // printf("   *** Child process is done ***\n");
+    close(ofd);
     return(0);
 }
 
+// Move to morse.c
 char readCharOfMorse(void)
 {
+	if (char_index > 64)
+		perror("Too long morse");
 	char res = letter[char_index];
 	char_ready = 0;
 	char_index = 1;
