@@ -1,4 +1,3 @@
-
 // INCLUDES
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,18 +10,20 @@
 #include <time.h>
 
 // CONSTANT DEFINITIONS
-#define BLOCKSIZE 4096
-#define DEFAULT_KILL_DELAY 10
-#define END_KILL_DELAY 10
+#define BLOCKSIZE 1024
+#define DEFAULT_KILL_DELAY 100
+#define END_KILL_DELAY 100
 
 // FUNCTION DEFINITIONS
 
-char* morseEncode(char);
+char* morseEncode(char, int);
 
-int sendCharInMorse(char, pid_t);
+int sendCharInMorse(char, pid_t, int);
 
 char readCharOfMorse(void);
 
 void sighandler_client(int);
+
+void sighandler_server(int);
 
 void delay_micro(int);

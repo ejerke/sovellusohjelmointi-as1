@@ -11,10 +11,9 @@
  * 
  * SIGALRM means that the previously sent signals can be calculated.
  * 
- * 
-*/
+ */
 
-char* morseEncode(char x)
+char* morseEncode(char x, int log_fd)
 {
     // Return morse based on char
     switch (x) {
@@ -118,9 +117,8 @@ char* morseEncode(char x)
         return "-----";
 
     // User defined characters, also need to be implemented
-    // separately to client-side.
+    // separately to client-side (done by adding them to letter array variable)
 
-    // every encoded '_' means one sent SIG_ALRM, also the function
     // sendCharOfMorse always adds one SIG_ALRM to the end of a char
     case ' ': 
         return "..--.";
@@ -141,22 +139,22 @@ char* morseEncode(char x)
 
     // Send an underscore for a character that is not implemented.
     default:
-        printf("---- CHAR: '%c' not implemented\n", x);
+        // printf("---- CHAR: '%c' not implemented\n", x);
+        write(log_fd, "Char not implemented\n", 21);
         return ".--..";
     }
 
 }
 
-int sendCharInMorse(char a, pid_t target)
+int sendCharInMorse(char a, pid_t target, int log_fd)
 {
     char to_send[6];
     memset(to_send, 0, 6);
-    strcpy(to_send, morseEncode(a));
+    strcpy(to_send, morseEncode(a, log_fd));
     int i = 0;
 
     while ( to_send[i] )
     {
-    
         switch ( to_send[i] )
         {
         case '.':

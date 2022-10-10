@@ -1,0 +1,7 @@
+parent execute
+Server is ready to start sending morse
+Client has access to log file
+**Output fd established from argv[0]
+**Child process is initialized and ready to receive code
+Something went wrong with read
+EOF reached in server, exiting

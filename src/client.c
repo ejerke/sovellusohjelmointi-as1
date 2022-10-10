@@ -1,29 +1,32 @@
 #include "header.h"
 
-// static int signal_array[3] = {
-// 	// SIGINT,
-// 	// SIGTERM,
-// 	SIGALRM,
-// 	SIGUSR1,
-// 	SIGUSR2,
-// };
 static char text[BLOCKSIZE];
-static int text_i;
+static volatile int text_i = 0;
 
-static const char *letter = "**ETIANMSURWDKGOHVF?L?PJBXCYZQ??54$3?? 2.,+-_??16=/?????7???8\n90";
+static const char *letter = "**etianmsurwdkgohvf?l?pjbxcyzq??54$3?? 2.,+-_??16=/?????7???8\n90";
 
 static volatile int char_index = 1;
 static volatile int char_ready = 0;
+static volatile int should_continue = 1;
 
 int main(int argc, char **argv)
 {
 	// pid_t parent_id = getppid();
 	memset(text, 0, sizeof(text));
+	int ofd;
+	int log_fd = strtol(argv[1], NULL, 10);
+	write(log_fd, "Client has access to log file\n", 30);
 
-    int ofd = strtol(argv[2], NULL, 10);
+	// Start gives output file to client either as dash (stdout) or a filename.
+	if ( !strcmp(argv[0],"-") )
+    	 ofd = STDOUT_FILENO;
+	else
+		ofd = creat(argv[0], 0666);
 
-	// Start listening to signals listed in signal_array
-    // exec to run appropriate subprocess(server/client).
+	write(log_fd, "**Output fd established from argv[0]\n", 37);
+
+	// Start listening to signals
+
 	struct sigaction act;
 	act.sa_handler = &sighandler_client;
 	sigemptyset(&act.sa_mask);
@@ -33,31 +36,39 @@ int main(int argc, char **argv)
 	sigaction(SIGUSR2, &act, NULL);
 	sigaction(SIGALRM, &act, NULL);
 
-    printf("   *** Child process is ready ***\n");
+	write(log_fd, "**Child process is initialized and ready to receive code\n", 57);
 
-    // Wait for more input until server exits.
-    while (1)
+    // Wait for input until server exits.
+
+    while ( should_continue )
 	{
 		if (char_ready)
 		{
-			text[text_i] = readCharOfMorse();
-
-			if ( text[text_i] == '\n')
+			// Read newest char and write to output if line is complete.
+			if ( (text[text_i++] = readCharOfMorse()) == '\n' )
 			{
-				// printf("received a complete line, text now:\n");
-				// printf("%s\n", text);
-				if ( write(ofd, text, BLOCKSIZE) == -1 )
-					printf("didnt write\n");
+				int res = write(ofd, text, text_i);
+				if ( res == -1 )
+					write(log_fd, "**Write failed\n", 15);
+				else if ( res == 0 )
+				{
+					write(log_fd, "**EOF received in client, exiting\n", 32);
+					break;
+				}
+				else
+					write(log_fd, "**Wrote a line to output\n", 25);
+				text_i = 0;
 			}
-			text_i++;
 		}
 	}
 
+	perror("well done\n");
     close(ofd);
+    close(log_fd);
     return(0);
 }
 
-// Move to morse.c
+// Move to morse.c ---------------------
 char readCharOfMorse(void)
 {
 	if (char_index > 64)
@@ -81,6 +92,9 @@ void sighandler_client(int sig)
 			break;
 		case SIGUSR2:
 			char_index = char_index*2+1;
+			break;
+		case SIGINT:
+			should_continue = 0;
 			break;
 	}	
 }
