@@ -11,6 +11,7 @@ static volatile int should_continue = 1;
 
 int main(int argc, char **argv)
 {
+	char log_str[LOG_LINE_LENGTH];
 	// pid_t parent_id = getppid();
 	memset(text, 0, sizeof(text));
 	int ofd;
@@ -23,7 +24,8 @@ int main(int argc, char **argv)
 	else
 		ofd = creat(argv[0], 0666);
 
-	write(log_fd, "**Output fd established from argv[0]\n", 37);
+	sprintf(log_str, "Client opened output stream based on: '%s'\n", argv[0]);
+	write(log_fd, log_str, strlen(log_str));
 
 	// Start listening to signals
 
@@ -38,7 +40,7 @@ int main(int argc, char **argv)
 	sigaction(SIGINT, &act, NULL);
 
 	write(log_fd, "**Child process is initialized and ready to receive code\n", 57);
-	printf("ppid %d\n", getppid());
+
     // Wait for input until server exits.
 
     while ( should_continue )

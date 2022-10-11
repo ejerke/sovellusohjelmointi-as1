@@ -7,6 +7,9 @@ int main(int argc, char **argv)
     if ( argc < 3 )
         return(-1);
 
+    // Helper variable to write good log entrys.
+    char log_str[LOG_LINE_LENGTH];
+
     // Start listening to signals
 
 	struct sigaction act;
@@ -20,10 +23,10 @@ int main(int argc, char **argv)
     // Read commandline arguments to numbers.
     int child_pid, ifd, log_fd;
     child_pid = strtol(argv[0], NULL, 10);
-    ifd =       strtol(argv[1], NULL, 10);
+    ifd =       open(argv[1], O_RDONLY);
     log_fd =    strtol(argv[2], NULL, 10);
-
-	write(log_fd, "Server is ready to start sending morse\n", 39);
+    sprintf(log_str, "Server opened input stream based on '%s'\n", argv[1]);
+	write(log_fd, log_str, strlen(log_str));
 
     delay_micro(10000);
 
@@ -36,7 +39,7 @@ int main(int argc, char **argv)
         read_size = read(ifd,buf,BLOCKSIZE);
         if ( read_size < 0 )
             write(log_fd, "Interrupt in server, possibly SIGINT\n", 37);
-        if ( read_size == 0 ) break;
+        if ( read_size <= 0 ) break;
 
 		// Send buffer char by char to client.
         int i = 0;
