@@ -1,7 +1,0 @@
-parent execute
-Server is ready to start sending morse
-Client has access to log file
-**Output fd established from argv[0]
-**Child process is initialized and ready to receive code
-EOF reached in server, exiting
-**EOF received in client, exiting

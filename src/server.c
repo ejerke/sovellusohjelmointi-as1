@@ -29,14 +29,14 @@ int main(int argc, char **argv)
 
     // Allocate buffer
     char *buf = malloc(BLOCKSIZE);
-    if (buf == NULL) return(0);
+    if ( buf == NULL) return(0 );
     while ( should_continue )
     {
         int read_size;
         read_size = read(ifd,buf,BLOCKSIZE);
-        if (read_size < 0)
+        if ( read_size < 0 )
             write(log_fd, "Interrupt in server, possibly SIGINT\n", 37);
-        if (read_size == 0) break;
+        if ( read_size == 0 ) break;
 
 		// Send buffer char by char to client.
         int i = 0;
@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 // Handles only SIGINT for server.
 void sighandler_server(int sig)
 {
-    switch (sig)
+    switch ( sig )
     {
     case SIGINT:
         should_continue = 0;
