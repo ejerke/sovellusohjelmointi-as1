@@ -35,9 +35,10 @@ int main(int argc, char **argv)
 	sigaction(SIGUSR1, &act, NULL);
 	sigaction(SIGUSR2, &act, NULL);
 	sigaction(SIGALRM, &act, NULL);
+	sigaction(SIGINT, &act, NULL);
 
 	write(log_fd, "**Child process is initialized and ready to receive code\n", 57);
-
+	printf("ppid %d\n", getppid());
     // Wait for input until server exits.
 
     while ( should_continue )
@@ -52,7 +53,7 @@ int main(int argc, char **argv)
 					write(log_fd, "**Write failed\n", 15);
 				else if ( res == 0 )
 				{
-					write(log_fd, "**EOF received in client, exiting\n", 32);
+					perror("eof\n");
 					break;
 				}
 				else
@@ -61,8 +62,8 @@ int main(int argc, char **argv)
 			}
 		}
 	}
+	write(log_fd, "**EOF received in client, exiting\n", 34);
 
-	perror("well done\n");
     close(ofd);
     close(log_fd);
     return(0);

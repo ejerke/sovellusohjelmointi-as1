@@ -15,6 +15,7 @@ int main(int argc, char **argv)
 	act.sa_flags = 0;
 
 	sigaction(SIGINT, &act, NULL);
+	// sigaction(SIGCHLD, &act, NULL);
 
     // Read commandline arguments to numbers.
     int child_pid, ifd, log_fd;
@@ -33,28 +34,35 @@ int main(int argc, char **argv)
     {
         int read_size;
         read_size = read(ifd,buf,BLOCKSIZE);
-        if (read_size < 0) write(log_fd, "Something went wrong with read\n", 31);
+        if (read_size < 0)
+            write(log_fd, "Interrupt in server, possibly SIGINT\n", 37);
         if (read_size == 0) break;
 
 		// Send buffer char by char to client.
         int i = 0;
         while ( i < read_size && buf[i] != EOF )
         {
-            printf(" loppu   '%c'\n", buf[i]);
             sendCharInMorse(buf[i], child_pid, log_fd);
             i++;
         }
     }
 
-	kill(child_pid, SIGINT);
-
 	write(log_fd, "EOF reached in server, exiting\n", 31);
     free(buf);
     close(ifd);
+
+	kill(child_pid, SIGINT);
+    wait(NULL);
+    return(0);
 }
 
 // Handles only SIGINT for server.
 void sighandler_server(int sig)
 {
-    should_continue = 0;
+    switch (sig)
+    {
+    case SIGINT:
+        should_continue = 0;
+        break;
+    }
 }
