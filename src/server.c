@@ -1,6 +1,7 @@
 #include "header.h"
 
 static volatile int should_continue = 1;
+static volatile int child_ready = 0;
 
 int main(int argc, char **argv)
 {
@@ -8,7 +9,6 @@ int main(int argc, char **argv)
         return(-1);
 
     // Helper variable to write good log entrys.
-    char log_str[LOG_LINE_LENGTH];
 
     // Start listening to signals
 
@@ -18,24 +18,51 @@ int main(int argc, char **argv)
 	act.sa_flags = 0;
 
 	sigaction(SIGINT, &act, NULL);
-	// sigaction(SIGCHLD, &act, NULL);
+	sigaction(SIGCHLD, &act, NULL); /* Child uses to indicate being ready */
 
     // Read commandline arguments to numbers.
     int child_pid, ifd, log_fd;
     child_pid = strtol(argv[0], NULL, 10);
-    ifd =       open(argv[1], O_RDONLY);
-    log_fd =    strtol(argv[2], NULL, 10);
+
+    // Read log file descriptor.
+	log_fd = strtol(argv[2], NULL, 10);
+    if ( log_fd < 0 )
+    {
+        perror("ei näin\n");
+        kill(child_pid, SIGINT);
+        return(-1);
+    }
+	write(log_fd, "Server has access to log file\n", 30);
+
+
+    // Open ifd and check for errors.
+    ifd = STDIN_FILENO;
+    if ( strcmp(argv[1],"-") )
+        ifd = open(argv[1], O_RDONLY);
+
+    if ( child_pid == 0 || ifd < 0 )
+    {
+        write(log_fd, "Server initialization failed, exiting\n", 38);
+        kill(child_pid, SIGINT);
+        wait(NULL);
+        return(-1);
+    }
+
+    char log_str[LOG_LINE_LENGTH];
     sprintf(log_str, "Server opened input stream based on '%s'\n", argv[1]);
 	write(log_fd, log_str, strlen(log_str));
 
-    delay_micro(10000);
-
     // Allocate buffer
     char *buf = malloc(BLOCKSIZE);
-    if ( buf == NULL) return(0 );
+    if ( buf == NULL) return(0);
+    int read_size;
+
+    // Wait for child to get ready to receive input:
+    while ( !child_ready )
+        ;
+
     while ( should_continue )
     {
-        int read_size;
         read_size = read(ifd,buf,BLOCKSIZE);
         if ( read_size < 0 )
             write(log_fd, "Interrupt in server, possibly SIGINT\n", 37);
@@ -59,13 +86,16 @@ int main(int argc, char **argv)
     return(0);
 }
 
-// Handles only SIGINT for server.
+// SIGINT to exit cleanly and SIGCHLD to ack. child being ready from something.
 void sighandler_server(int sig)
 {
     switch ( sig )
     {
     case SIGINT:
         should_continue = 0;
+        break;
+    case SIGCHLD:
+        child_ready = 1;
         break;
     }
 }

@@ -11,10 +11,14 @@
  * 
  * SIGALRM means that the previously sent signals can be calculated.
  * 
- * The morse code is turned into an index of the letter array in client by incrementing the 
- * index variable by *2 on SIGUSR1 ('.') and by *2+1 on SIGUSR2 ('-').
+ * The morse code is turned into an index of the letter array in client by incrementing
+ * the index variable by *2 on SIGUSR1 ('.') and by *2+1 on SIGUSR2 ('-').
  * 
  */
+
+// Constant list of letters to read based on index, calculated as stated above.
+static const char *letter = "**etianmsurwdkgohvf?l?pjbxcyzq??54$3?? 2.,+-_??16=/?????7???8\n90";
+
 
 char* morseEncode(char x, int log_fd)
 {
@@ -161,15 +165,27 @@ int sendCharInMorse(char a, pid_t target, int log_fd)
         case '.':
             kill(target, SIGUSR1);
             break;
-        
+
         case '-':
             kill(target, SIGUSR2);
             break;
         }
+        wait(NULL);
         i++;
-        delay_micro(DEFAULT_KILL_DELAY);
     }
     kill(target, SIGALRM); // Send always at least character end.
-    delay_micro(END_KILL_DELAY);
+    wait(NULL);
+
     return(0);
+}
+
+// readCharOfMorse
+char readCharOfMorse(volatile int* char_index, volatile int* char_ready)
+{
+	if (*char_index > 64)
+		perror("Too long morse");
+	char res = letter[*char_index];
+	*char_ready = 0;
+	*char_index = 1;
+	return(res);
 }

@@ -14,6 +14,7 @@
 #define DEFAULT_KILL_DELAY 100
 #define END_KILL_DELAY 50
 #define LOG_LINE_LENGTH 100
+#define DEFAULT_LOG "log.log"
 
 // FUNCTION DEFINITIONS
 
@@ -21,7 +22,7 @@ char* morseEncode(char, int);
 
 int sendCharInMorse(char, pid_t, int);
 
-char readCharOfMorse(void);
+char readCharOfMorse(volatile int*, volatile int*);
 
 void sighandler_client(int);
 

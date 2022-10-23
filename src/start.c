@@ -4,95 +4,62 @@
 #include "header.h"
 
 int main(int argc,char **argv) {
-    int ifd;
-
-    // Quick and dirty command line parsing
-    if ( argc == 2 ) { // Only input file, output stdout
-        if ( strcmp(argv[1],"-") == 0 ) {
-            ifd = STDIN_FILENO;
-        } else {
-            ifd = open(argv[1],O_RDONLY);
-            if ( ifd < 0 ) {
-                fprintf(stderr,"Opening input file failed\n");
-                return(-1);
-            }
-        }
-    } else if ( argc == 3 ) { // Both input and output file given
-        if ( strcmp(argv[1],"-") == 0 ) {
-            ifd = STDIN_FILENO;
-        } else {
-            ifd = open(argv[1],O_RDONLY);
-            if ( ifd < 0 ) {
-                fprintf(stderr,"Opening input file failed\n");
-                return(-1);
-            }
-        }
-        // if ( strcmp(argv[2],"-") == 0 ) {
-        //     ofd = STDOUT_FILENO;
-        // } else {
-        //     ofd = open(argv[2],O_WRONLY|O_CREAT|O_TRUNC,0666);
-        //     if ( ofd < 0 ) {
-        //         fprintf(stderr,"Creating output file failed\n");
-        //         return(-1);
-        //     }
-        // }
-    } else {
-        fprintf(stderr, "Usage: %s [input|-] [output|-]\n", argv[0]);
+    
+    // Only check that argument count seems valid and open log, server and client will handle the args.
+    if ( argc < 2 || argc > 4 ) {
+        fprintf(stderr, "Usage: %s [input|-] [output|-] [log-file|-]\n", argv[0]);
         return(-1);
     }
-    int log_fd = creat("log.log", 0644);
-    #define LOG_FD log_fd
-    char log_str[16];
-    snprintf(log_str, sizeof(log_str), "%d", log_fd);
-    // pause()
-    // sigset_t
-    // sigaction()
-    // sig(timed)wait()
-    // async-signal-safe functions
 
-    // Divide the program into two processes,
-    // exec to run appropriate process(server/client).
+    int log_fd;
+    if ( argc == 4 && strcmp(argv[3], "-") )
+        log_fd = creat(argv[3], O_WRONLY);
+    else
+        log_fd = creat(DEFAULT_LOG, O_WRONLY);
+    
+    write(log_fd, "Log file opened by start\n", 25);
+    char log[16];
+    snprintf(log, sizeof(log), "%d", log_fd);
+
     pid_t  child_pid = 0;
     child_pid = fork();
 
-    if ( child_pid == 0 ) // In child
+    if ( child_pid == 0 ) // In Client
     {
+        //                     ifd   log
+        char* client_args[] = {NULL, NULL, NULL};
+
         char client_exec[] = "./client";
-        // char ofd_str[16];
+        // log
+        client_args[1] = log;
 
-        // snprintf(ofd_str, sizeof(ofd_str), "%d", ofd);
-
-        char* client_args[] = {NULL, log_str, NULL};
-
+        // ifd
         if ( argv[2] )
             client_args[0] = argv[2];
         else
             client_args[0] = "-";
 
-       //printf("childi lähtee ny\n");
         execv(client_exec, client_args);
     }
-    else if ( child_pid != -1 ) // In parent
+    else if ( child_pid != -1 ) // In Server
     {
         // Prepare the parameters for exec
         char server_exec[] = "./server";
         char cpid_str[16];
-        // char ifd_str[16];
-
         snprintf(cpid_str, sizeof(cpid_str), "%d", child_pid);
-        // snprintf(ifd_str, sizeof(ifd_str), "%d", ifd);
-        char* server_args[] = {cpid_str, "-", log_str, NULL};
 
-        if ( argv[1] )
+        //                    child_pid  ifd  log
+        char* server_args[] = {cpid_str, "-", log, NULL};
+
+        // ifd
+        if ( strcmp(argv[1],"-") )
             server_args[1] = argv[1];
 
 
-        write(LOG_FD, "parent execute\n", 15);
-       //printf("parentti lähtee ny\n");
         execv(server_exec, server_args);
     }
     else
-       //printf("error in forking\n");
+       printf("error in forking\n");
 
     return(0);
 }
