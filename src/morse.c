@@ -19,7 +19,6 @@
 // Constant list of letters to read based on index, calculated as stated above.
 static const char *letter = "**etianmsurwdkgohvf?l?pjbxcyzq??54$3?? 2.,+-_??16=/?????7???8\n90";
 
-
 char* morseEncode(char x, int log_fd)
 {
     // Return morse based on char
@@ -170,11 +169,11 @@ int sendCharInMorse(char a, pid_t target, int log_fd)
             kill(target, SIGUSR2);
             break;
         }
-        wait(NULL);
+        delay_micro(DEFAULT_KILL_DELAY);
         i++;
     }
     kill(target, SIGALRM); // Send always at least character end.
-    wait(NULL);
+    delay_micro(DEFAULT_KILL_DELAY);
 
     return(0);
 }

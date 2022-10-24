@@ -57,11 +57,13 @@ int main(int argc, char **argv)
     int read_size;
 
     // Wait for child to get ready to receive input:
-    while ( !child_ready )
-        ;
-
+    // while ( !child_ready )
+    //     ;
+    // Wait a bit to make sure client is ready first.
+    delay_micro(10000);
     while ( should_continue )
     {
+        delay_micro(50);
         read_size = read(ifd,buf,BLOCKSIZE);
         if ( read_size < 0 )
             write(log_fd, "Interrupt in server, possibly SIGINT\n", 37);
@@ -69,7 +71,7 @@ int main(int argc, char **argv)
 
 		// Send buffer char by char to client.
         int i = 0;
-        while ( i < read_size && buf[i] != EOF )
+        while ( i < read_size && buf[i] != EOF && should_continue)
         {
             sendCharInMorse(buf[i], child_pid, log_fd);
             i++;
@@ -93,8 +95,8 @@ void sighandler_server(int sig)
     case SIGINT:
         should_continue = 0;
         break;
-    case SIGCHLD:
-        child_ready = 1;
-        break;
+    // case SIGCHLD:
+    //     child_ready = 1;
+    //     break;
     }
 }

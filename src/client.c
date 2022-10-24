@@ -51,7 +51,7 @@ int main(int argc, char **argv)
 	write(log_fd, "**Child process is initialized and ready to receive code\n", 57);
 
 	// Signal server that client is ready.
-	kill(getppid(), SIGCHLD);
+	// kill(getppid(), SIGCHLD);
     // Wait for input until server exits.
     while ( should_continue )
 	{
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 				// write(log_fd, "**Wrote a char to output\n", 25);
 		}
 	}
-	write(log_fd, "**EOF received in client, exiting\n", 34);
+	write(log_fd, "**Run interrupted in client, exiting\n", 37);
 
     close(ofd);
     close(log_fd);
@@ -98,5 +98,5 @@ void sighandler_client(int sig)
 			should_continue = 0;
 			break;
 	}
-	kill(getppid(), SIGCHLD);
+	// kill(getppid(), SIGCHLD);
 }

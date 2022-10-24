@@ -59,7 +59,7 @@ int main(int argc,char **argv) {
         execv(server_exec, server_args);
     }
     else
-       printf("error in forking\n");
+       perror("error in forking\n");
 
     return(0);
 }
