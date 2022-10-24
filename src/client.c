@@ -12,10 +12,6 @@ int main(int argc, char **argv)
 	int log_fd;
 
 	// Start gives output file to client either as NULL (stdout) or a filename.
-		// if ( strcmp(argv[1], "-") )
-		// 	log_fd = creat(argv[1], O_WRONLY);
-		// else
-		// 	log_fd = creat(DEFAULT_LOG, O_WRONLY);
 	log_fd = strtol(argv[1], NULL, 10);
 	if ( log_fd < 0 )
 	{
@@ -70,14 +66,15 @@ int main(int argc, char **argv)
 				write(log_fd, "**Write failed\n", 15);
 			else if ( res == 0 )
 				break;
-			else
-				write(log_fd, "**Wrote a char to output\n", 25);
+			// else
+				// write(log_fd, "**Wrote a char to output\n", 25);
 		}
 	}
 	write(log_fd, "**EOF received in client, exiting\n", 34);
 
     close(ofd);
     close(log_fd);
+	kill(getppid(), SIGINT);
     return(0);
 }
 

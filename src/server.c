@@ -8,8 +8,6 @@ int main(int argc, char **argv)
     if ( argc < 3 )
         return(-1);
 
-    // Helper variable to write good log entrys.
-
     // Start listening to signals
 
 	struct sigaction act;
@@ -30,6 +28,7 @@ int main(int argc, char **argv)
     {
         perror("ei näin\n");
         kill(child_pid, SIGINT);
+        wait(NULL);
         return(-1);
     }
 	write(log_fd, "Server has access to log file\n", 30);
