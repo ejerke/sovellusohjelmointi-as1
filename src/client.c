@@ -1,5 +1,8 @@
 #include "header.h"
 
+static char received_text[10*BLOCKSIZE];
+static int received_i;
+static int written_i;
 
 static volatile int char_index = 1;
 static volatile int char_ready = 0;
@@ -51,8 +54,11 @@ int main(int argc, char **argv)
 	write(log_fd, "**Child process is initialized and ready to receive code\n", 57);
 
 	// Signal server that client is ready.
-	// kill(getppid(), SIGCHLD);
     // Wait for input until server exits.
+	memset(received_text, 0, sizeof(received_text));
+	received_i = 0;
+	written_i = 0;
+
     while ( should_continue )
 	{
 		pause();
@@ -60,16 +66,26 @@ int main(int argc, char **argv)
 		{
 			// Read newest char and write to output.
 			char to_write = readCharOfMorse(&char_index, &char_ready);
+			int res = 0;
+			received_text[received_i++] = to_write;
+			if ( to_write != '\n' && to_write != 0 )
+				continue;
 
-			int res = write(ofd, &to_write, 1);
+			res = write(ofd, (received_text+written_i), received_i-written_i);
+				// received_text[received_i++] = to_write;
+				// int res = to_write;
 			if ( res == -1 )
 				write(log_fd, "**Write failed\n", 15);
 			else if ( res == 0 )
 				break;
-			// else
-				// write(log_fd, "**Wrote a char to output\n", 25);
+			written_i += res;
+				// else
+					// write(log_fd, "**Wrote a char to output\n", 25);
 		}
 	}
+	// printf("asdasd %d %d\n", received_i, written_i);
+	if (received_i-written_i > 0)
+		write(ofd, (received_text+written_i), received_i-written_i);
 	write(log_fd, "**Run interrupted in client, exiting\n", 37);
 
     close(ofd);
@@ -98,5 +114,4 @@ void sighandler_client(int sig)
 			should_continue = 0;
 			break;
 	}
-	// kill(getppid(), SIGCHLD);
 }

@@ -181,10 +181,17 @@ int sendCharInMorse(char a, pid_t target, int log_fd)
 // readCharOfMorse
 char readCharOfMorse(volatile int* char_index, volatile int* char_ready)
 {
+    char a = 0;
 	if (*char_index > 64)
-		perror("Too long morse");
-	char res = letter[*char_index];
-	*char_ready = 0;
-	*char_index = 1;
-	return(res);
+        a = '_';
+		// perror("Too long morse");
+	char res;
+    if (a)
+        res = a;
+    else
+        res = letter[*char_index];
+
+   *char_ready = 0;
+   *char_index = 1;
+   return(res);
 }
