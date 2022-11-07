@@ -13,7 +13,7 @@
 #define BLOCKSIZE 1
 #define DEFAULT_KILL_DELAY 500
 #define LOG_LINE_LENGTH 100
-#define DEFAULT_LOG "log.log"
+#define DEFAULT_LOG "log.txt"
 
 // FUNCTION DEFINITIONS
 

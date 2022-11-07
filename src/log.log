@@ -1,8 +1,0 @@
-Log file opened by start
-Server has access to log file
-Server opened input stream based on 'from.txt'
-**Client has access to log file
-**Client opened output stream based on: '-'
-**Child process is initialized and ready to receive code
-**Run interrupted in client, exiting
-EOF reached in server, exiting

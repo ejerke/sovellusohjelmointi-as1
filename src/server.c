@@ -1,7 +1,7 @@
 #include "header.h"
 
 static volatile int should_continue = 1;
-static volatile int child_ready = 0;
+// static volatile int child_ready = 0;
 
 int main(int argc, char **argv)
 {

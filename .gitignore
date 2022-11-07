@@ -2,4 +2,5 @@
 start
 server
 client
-log.log
+bench
+log.txt

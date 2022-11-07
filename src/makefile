@@ -1,6 +1,10 @@
 # Compiler version and flags
 CC=gcc
-CFLAGS= -std=gnu99 -Wall -pedantic -I $(IDIR)
+CFLAGS= -O2 -Wall -pedantic -I $(IDIR)
+
+
+PROGRAM=start
+TESTER=as1_testbench
 
 # Directories
 ODIR=./obj
@@ -12,9 +16,11 @@ IDIR =../include
 # List all .h and .c files
 _DEPS = header.h
 _OBJ = start.o source.o
+_OBJ_BENCH = as1_testbench.o
 _OBJ_SERVER = server.o source.o morse.o
 _OBJ_CLIENT = client.o source.o morse.o
 
+TFLAGS=-O2 -g -Wall -pedantic
 
 # Create directories for the header files
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
@@ -22,6 +28,7 @@ DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 # Create the directory lists for object files
 # using the object file list and object dir
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+OBJ_BENCH = $(patsubst %,$(ODIR)/%,$(_OBJ_BENCH))
 OBJ_SERVER = $(patsubst %,$(ODIR)/%,$(_OBJ_SERVER))
 OBJ_CLIENT = $(patsubst %,$(ODIR)/%,$(_OBJ_CLIENT))
 
@@ -31,11 +38,15 @@ $(ODIR)/%.o: %.c $(DEPS)
 
 # Compile everything.
 .PHONY: all
-all: start server client
+all: start server client bench
+
+bench: $(OBJ_BENCH)
+	$(CC) -o bench $^ $(TFLAGS)
+
 
 # Compile command for start
 start: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+	$(CC) -o start $^ $(CFLAGS) $(LIBS)
 
 # Compile command for server
 server: $(OBJ_SERVER)
@@ -48,4 +59,4 @@ client: $(OBJ_CLIENT)
 # clean
 .PHONY: clean
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ start server client
+	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ start server client test
