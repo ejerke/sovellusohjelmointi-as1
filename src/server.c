@@ -60,7 +60,7 @@ int main(int argc, char **argv)
     // while ( !child_ready )
     //     ;
     // Wait a bit to make sure client is ready first.
-    delay_micro(10000);
+    delay_micro(100000);
     while ( should_continue )
     {
         read_size = read(ifd,buf,BLOCKSIZE);
@@ -74,7 +74,6 @@ int main(int argc, char **argv)
         while ( i < read_size && buf[i] != EOF && should_continue)
         {
             sendCharInMorse(buf[i], child_pid, log_fd);
-            delay_micro(100);
             i++;
         }
     }

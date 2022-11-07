@@ -1,6 +1,6 @@
 #include "header.h"
 
-static char received_text[10*BLOCKSIZE];
+static char received_text[BLOCKSIZE];
 static int received_i;
 static int written_i;
 
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
 			char to_write = readCharOfMorse(&char_index, &char_ready);
 			int res = 0;
 			received_text[received_i++] = to_write;
-			if ( to_write != '\n' && to_write != 0 )
+			if ( to_write != '\n' && to_write != 0 && received_i < (sizeof(received_text)-1))
 				continue;
 
 			res = write(ofd, (received_text+written_i), received_i-written_i);
