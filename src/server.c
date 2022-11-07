@@ -60,7 +60,7 @@ int main(int argc, char **argv)
     // while ( !child_ready )
     //     ;
     // Wait a bit to make sure client is ready first.
-    delay_micro(100000);
+    delay_micro(500000);
     while ( should_continue )
     {
         read_size = read(ifd,buf,BLOCKSIZE);

@@ -10,8 +10,8 @@
 #include <time.h>
 
 // CONSTANT DEFINITIONS
-#define BLOCKSIZE 1
-#define DEFAULT_KILL_DELAY 500
+#define BLOCKSIZE 100
+#define DEFAULT_KILL_DELAY 1000
 #define LOG_LINE_LENGTH 100
 #define DEFAULT_LOG "log.txt"
 

@@ -17,7 +17,7 @@
  */
 
 // Constant list of letters to read based on index, calculated as stated above.
-static const char *letter = "**etianmsurwdkgohvf?l?pjbxcyzq??54$3?? 2.,+-_??16=/?????7???8\n90";
+static const char *letter = "**ETIANMSURWDKGOHVF?L?PJBXCYZQ??54$3() 2.,+-_!&16=/\'@:\"?7???8\n90";
 
 char* morseEncode(char x, int log_fd)
 {
@@ -129,6 +129,8 @@ char* morseEncode(char x, int log_fd)
         return("..--.");
     case '=':
         return("-...-");
+    case '/':
+        return("-..-.");
     case '+':
         return(".-.-.");
     case '-':
@@ -137,12 +139,31 @@ char* morseEncode(char x, int log_fd)
         return(".-...");
     case ',':
         return(".-..-");
-    case '_':
-        return(".--..");
     case '\n':
         return("---.-");
+    case '(':
+        return("..-..");
+    case ')':
+        return("..-.-");
+    case '!':
+        return(".--.-");
+    case '&':
+        return(".---.");
+    case '\'':
+        return("-..--");
+    case '@':
+        return("-.-..");
+    case ':':
+        return("-.-.-");
+    case '\"':
+        return("-.--.");
+    case '?':
+        return("-.---");
 
     // Send an underscore for a character that is not implemented.
+
+    case '_':
+        return(".--..");
     default:
         // printf("---- CHAR: '%c' not implemented\n", x);
         write(log_fd, "Char not implemented\n", 21);
