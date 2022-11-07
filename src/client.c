@@ -71,14 +71,16 @@ int main(int argc, char **argv)
 			if ( to_write != '\n' && to_write != 0 && received_i < (sizeof(received_text)-1))
 				continue;
 
-			res = write(ofd, (received_text+written_i), received_i-written_i);
+			res = write(ofd, (received_text), received_i);
 				// received_text[received_i++] = to_write;
 				// int res = to_write;
 			if ( res == -1 )
 				write(log_fd, "**Write failed\n", 15);
 			else if ( res == 0 )
 				break;
+			received_i = 0;
 			written_i += res;
+
 				// else
 					// write(log_fd, "**Wrote a char to output\n", 25);
 		}
