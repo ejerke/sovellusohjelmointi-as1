@@ -54,7 +54,8 @@ int compare_file(const char *n1, const char *n2) {
     while (1) {
         int ca = fgetc(a);
         int cb = fgetc(b);
-        if ( ca != cb) { printf("%s != %s, mismatch at %d\n",n1,n2,ofs ); retval = -1; break; }
+        if ( ca != cb) { printf("%s != %s, mismatch at %d: sent '%c', received: '%c'\n",
+                                        n1,n2,ofs,ca,cb ); retval += 1; }
         if ( ca == EOF ) break;
         ofs++;
     }
@@ -109,7 +110,7 @@ int test_pipe(const char *bin,int size) {
     // delete the files on success
     unlink(inputfile);
     unlink(outputfile);
-    return(0);
+    return(ret);
 }
 
 /**
@@ -120,10 +121,12 @@ int test_pipe(const char *bin,int size) {
  * \return 0 on success, -1 if the test failed. */
 int test_pipes(int num,const char *bin,int size) {
     int i;
+    int retval = 0;
     for (i=0; i<num;i++) {
-        int retval = test_pipe(bin,size);
-        if ( retval != 0) return(retval );
+        retval += test_pipe(bin,size);
+        printf("one pipe runned\n");
     }        
+    if ( retval != 0) return(retval );
     return(0);
 }
 
@@ -160,7 +163,7 @@ int test_file(const char *bin,int size) {
     unlink(inputfile);
     unlink(outputfile);
 
-    return(0);
+    return(ret);
 }
 
 
@@ -172,11 +175,12 @@ int test_file(const char *bin,int size) {
  * \return 0 on success, -1 if the test failed. */
 int test_files(int num,const char *bin,int size) {
     int i;
+    int retval = 0;
     for (i=0; i<num;i++) {
-        int retval = test_file(bin,size);
-        if ( retval != 0) return(retval );
+        retval += test_file(bin,size);
         printf("one test runned\n");
     }
+    if ( retval != 0) return(retval );
     return(0);
 }
 
@@ -214,22 +218,26 @@ int main(int argc,char **argv) {
     // Test short files
     printf("Short files test\n");
     ret = test_files(numtests,argv[optind],16);
-    if ( ret < 0) return(-1 );
+    if ( ret > 0) printf("accuracy: %f\n", ((double)(16*numtests-ret))/(16*numtests) );
+    if ( ret < 0) printf("Not quite\n");
 
-    // // Test longer files
-    // printf("Longer files test\n");
-    // ret = test_files(numtests,argv[optind],1024);
-    // if ( ret < 0) return(-1 );
+    // Test longer files
+    printf("Longer files test\n");
+    ret = test_files(numtests,argv[optind],1024);
+    if ( ret > 0) printf("accuracy: %f\n", ((double)(1024*numtests-ret))/(1024*numtests) );
+    if ( ret < 0) printf("Not quite\n");
 
-    // // Test short files
-    // printf("Short pipes test\n");
-    // ret = test_pipes(numtests,argv[optind],16);
-    // if ( ret < 0) return(-1 );
+    // Test short files
+    printf("Short pipes test\n");
+    ret = test_pipes(numtests,argv[optind],16);
+    if ( ret > 0) printf("accuracy: %f\n", ((double)(16*numtests-ret))/(16*numtests) );
+    if ( ret < 0) printf("Not quite\n");
 
-    // // Test longer files
-    // printf("Longer pipes test\n");
-    // ret = test_pipes(numtests,argv[optind],1024);
-    // if ( ret < 0) return(-1 );
+    // Test longer files
+    printf("Longer pipes test\n");
+    ret = test_pipes(numtests,argv[optind],1024);
+    if ( ret > 0) printf("accuracy: %f\n", ((double)(1024*numtests-ret))/(1024*numtests) );
+    if ( ret < 0) printf("Not quite\n");
 
     if ( longtests ) {
         // Test very files

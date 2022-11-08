@@ -60,7 +60,7 @@ int main(int argc, char **argv)
     // while ( !child_ready )
     //     ;
     // Wait a bit to make sure client is ready first.
-    delay_micro(500000);
+    delay_micro(100000);
     while ( should_continue )
     {
         read_size = read(ifd,buf,BLOCKSIZE);
@@ -81,13 +81,13 @@ int main(int argc, char **argv)
 	write(log_fd, "EOF reached in server, exiting\n", 31);
     free(buf);
     close(ifd);
-
+    delay_micro(1000);
 	kill(child_pid, SIGINT);
     wait(NULL);
     return(0);
 }
 
-// SIGINT to exit cleanly and SIGCHLD to ack. child being ready from something.
+// SIGINT to exit cleanly and SIGCHLD to give client a bit more time (to write).
 void sighandler_server(int sig)
 {
     switch ( sig )
@@ -95,8 +95,8 @@ void sighandler_server(int sig)
     case SIGINT:
         should_continue = 0;
         break;
-    // case SIGCHLD:
-    //     child_ready = 1;
-    //     break;
+    case SIGCHLD:
+        delay_micro(1000);
+        break;
     }
 }

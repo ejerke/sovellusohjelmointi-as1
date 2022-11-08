@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 	int ofd;
 	int log_fd;
 
-	// Start gives output file to client either as NULL (stdout) or a filename.
+	// Start gives log file to client either as a file descriptor.
 	log_fd = strtol(argv[1], NULL, 10);
 	if ( log_fd < 0 )
 	{
@@ -24,11 +24,10 @@ int main(int argc, char **argv)
     }
 	write(log_fd, "**Client has access to log file\n", 32);
 
-
 	// Start gives output file to client either as dash (stdout) or a filename.
 	ofd = STDOUT_FILENO;
 	if ( strcmp(argv[0],"-") )
-		ofd = creat(argv[0], O_WRONLY);
+		ofd = creat(argv[0], 0644);
 
 	if ( ofd < 0 )
 	{
@@ -65,28 +64,25 @@ int main(int argc, char **argv)
 		if (char_ready)
 		{
 			// Read newest char and write to output.
+			kill(getppid(), SIGCHLD);  // Ask server for a bit of extra time
 			char to_write = readCharOfMorse(&char_index, &char_ready);
+
 			int res = 0;
 			received_text[received_i++] = to_write;
-			if ( to_write != '\n' && to_write != 0 && received_i < (sizeof(received_text)-1))
+			if ( to_write != '\n' && to_write != 0 && received_i < (sizeof(received_text)))
 				continue;
 
-			res = write(ofd, (received_text), received_i);
-				// received_text[received_i++] = to_write;
-				// int res = to_write;
+			res = write(ofd, received_text, received_i);
+
 			if ( res == -1 )
 				write(log_fd, "**Write failed\n", 15);
 			else if ( res == 0 )
 				break;
-			received_i = 0;
+			received_i -= res;
 			written_i += res;
-
-				// else
-					// write(log_fd, "**Wrote a char to output\n", 25);
 		}
 	}
-	// printf("asdasd %d %d\n", received_i, written_i);
-	if (received_i-written_i > 0)
+	if ( received_i-written_i > 0 )
 		write(ofd, (received_text+written_i), received_i-written_i);
 	write(log_fd, "**Run interrupted in client, exiting\n", 37);
 
