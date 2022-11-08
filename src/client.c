@@ -52,7 +52,6 @@ int main(int argc, char **argv)
 
 	write(log_fd, "**Child process is initialized and ready to receive code\n", 57);
 
-	// Signal server that client is ready.
     // Wait for input until server exits.
 	memset(received_text, 0, sizeof(received_text));
 	received_i = 0;
@@ -64,7 +63,6 @@ int main(int argc, char **argv)
 		if (char_ready)
 		{
 			// Read newest char and write to output.
-			kill(getppid(), SIGCHLD);  // Ask server for a bit of extra time
 			char to_write = readCharOfMorse(&char_index, &char_ready);
 
 			int res = 0;
@@ -72,6 +70,7 @@ int main(int argc, char **argv)
 			if ( to_write != '\n' && to_write != 0 && received_i < (sizeof(received_text)))
 				continue;
 
+			kill(getppid(), SIGCHLD);  // Ask server for a bit of extra time
 			res = write(ofd, received_text, received_i);
 
 			if ( res == -1 )

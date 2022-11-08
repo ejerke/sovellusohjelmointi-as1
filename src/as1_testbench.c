@@ -124,7 +124,6 @@ int test_pipes(int num,const char *bin,int size) {
     int retval = 0;
     for (i=0; i<num;i++) {
         retval += test_pipe(bin,size);
-        printf("one pipe runned\n");
     }        
     if ( retval != 0) return(retval );
     return(0);
@@ -178,7 +177,6 @@ int test_files(int num,const char *bin,int size) {
     int retval = 0;
     for (i=0; i<num;i++) {
         retval += test_file(bin,size);
-        printf("one test runned\n");
     }
     if ( retval != 0) return(retval );
     return(0);
@@ -215,6 +213,7 @@ int main(int argc,char **argv) {
     srandom(seed);
 
     int ret;
+    time_t t = time(NULL);
     // Test short files
     printf("Short files test\n");
     ret = test_files(numtests,argv[optind],16);
@@ -250,8 +249,9 @@ int main(int argc,char **argv) {
         ret = test_pipes(numtests,argv[optind],1024*1024);
         if ( ret < 0) return(-1 );
     }
+    t = time(NULL) - t;
 
-    printf("Tests passed successfully\n");
+    printf("Tests passed successfully, took: %lus\n", t);
     return(0);
 }
 

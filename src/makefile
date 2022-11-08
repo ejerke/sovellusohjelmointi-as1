@@ -20,7 +20,7 @@ _OBJ_BENCH = as1_testbench.o
 _OBJ_SERVER = server.o source.o morse.o
 _OBJ_CLIENT = client.o source.o morse.o
 
-TFLAGS=-O2 -g -Wall -pedantic
+TFLAGS=-std=gnu99 -g -Wall -pedantic
 
 # Create directories for the header files
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))

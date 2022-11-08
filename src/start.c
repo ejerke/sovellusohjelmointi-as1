@@ -13,9 +13,9 @@ int main(int argc,char **argv) {
 
     int log_fd;
     if ( argc == 4 && strcmp(argv[3], "-") )
-        log_fd = creat(argv[3], O_WRONLY);
+        log_fd = creat(argv[3], 0644);
     else
-        log_fd = creat(DEFAULT_LOG, O_WRONLY);
+        log_fd = creat(DEFAULT_LOG, 0644);
     
     write(log_fd, "Log file opened by start\n", 25);
     char log[16];

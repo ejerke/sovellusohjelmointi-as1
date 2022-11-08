@@ -159,13 +159,12 @@ char* morseEncode(char x, int log_fd)
         return("-.--.");
     case '?':
         return("-.---");
+    case '_':
+        return(".--..");
 
     // Send an underscore for a character that is not implemented.
 
-    case '_':
-        return(".--..");
     default:
-        // printf("---- CHAR: '%c' not implemented\n", x);
         write(log_fd, "Char not implemented\n", 21);
         return(".--..");
     }
@@ -191,11 +190,9 @@ int sendCharInMorse(char a, pid_t target, int log_fd)
             break;
         }
         delay_micro(DEFAULT_KILL_DELAY);
-        // pause();
         i++;
     }
     kill(target, SIGALRM); // Send always at least character end.
-    // pause();
     delay_micro(DEFAULT_KILL_DELAY);
 
     return(0);
@@ -207,7 +204,6 @@ char readCharOfMorse(volatile int* char_index, volatile int* char_ready)
     char a = 0;
 	if (*char_index > 64)
         a = '_';
-		// perror("Too long morse");
 	char res;
     if (a)
         res = a;

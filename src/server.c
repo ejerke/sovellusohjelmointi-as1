@@ -1,7 +1,6 @@
 #include "header.h"
 
 static volatile int should_continue = 1;
-// static volatile int child_ready = 0;
 
 int main(int argc, char **argv)
 {
@@ -57,11 +56,8 @@ int main(int argc, char **argv)
     if ( buf == NULL) return(0);
     int read_size;
 
-    // Wait for child to get ready to receive input:
-    // while ( !child_ready )
-    //     ;
-    // Wait a bit to make sure client is ready first.
-    delay_micro(2000);
+    // Wait for child to get ready to receive input
+    delay_micro(100000);
     while ( should_continue )
     {
         read_size = read(ifd,buf,BLOCKSIZE);
@@ -97,7 +93,7 @@ void sighandler_server(int sig)
         should_continue = 0;
         break;
     case SIGCHLD:
-        delay_micro(2000);
+        delay_micro(4000);
         break;
     }
 }
