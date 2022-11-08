@@ -4,11 +4,11 @@ Lähdekoodi ja makefile löytyvät ./src kansiosta, makefile sisältää clean j
 eli ensimmäiseksi suosittelen make clean all. Executablet ovat nimeltään start, server ja client,
 mutta luonnollisesti kahta jälkimmäistä ei tarvitse itse käynnistää. Ohjelma lähtee siis 
 käyntiin komennolla ./start [input/-] [output/-] [log/-]. Kaksi jälkimmäistä parametria ovat
-valinnaisia, joista outputin lacuna-arvo on STDOUT ja login on log.txt.
+valinnaisia, joista outputin lacuna-arvo on STDOUT ja log:n on log.txt.
 
 Saatavilla on myös as1_testbench executablena "bench", johon olen tehnyt muutokset, jotka 
 tarkemmin oppimispäiväkirjassa päivän 8.11. kohdalla. Delayt ovat tosiaan sen verran pienillä 
 marginaaleilla, että en suosittele tekemään mitään muuta siloin, kun testi suorittaa. Ilman
 erittäin pitkiä testejä suorittaminen kestää n. 1 min. Välillä kääntämisen jälkeen ensimmäinen
 suorituskerta aiheuttaa segmentation faultin. Uskoisin tämän johtuvan jotenkin filejen avaamisesta,
-sillä se ei toistu.
+sillä se ei toistu (jos testin keskeyttää, ei luotuja filejä välttämättä unlinkata).

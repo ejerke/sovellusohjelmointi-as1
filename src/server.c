@@ -1,4 +1,4 @@
-#include "header.h"
+#include "server.h"
 
 static volatile int should_continue = 1;
 
@@ -84,7 +84,6 @@ int main(int argc, char **argv)
     return(0);
 }
 
-// SIGINT to exit cleanly and SIGCHLD to give client a bit more time (to write).
 void sighandler_server(int sig)
 {
     switch ( sig )

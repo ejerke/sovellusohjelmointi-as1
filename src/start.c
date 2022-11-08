@@ -1,7 +1,4 @@
-/**
- * Mockup transfer between processes.
- */
-#include "header.h"
+#include "start.h"
 
 int main(int argc,char **argv) {
     

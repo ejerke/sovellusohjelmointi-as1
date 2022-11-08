@@ -10,15 +10,13 @@ TESTER=as1_testbench
 ODIR=./obj
 LDIR =../lib
 IDIR =../include
-# # Macro for common libraries: math
-# LIBS=-lm
 
 # List all .h and .c files
-_DEPS = header.h
-_OBJ = start.o source.o
+_DEPS = start.h server.h client.h delay.h morse.h
+_OBJ = start.o delay.o
 _OBJ_BENCH = as1_testbench.o
-_OBJ_SERVER = server.o source.o morse.o
-_OBJ_CLIENT = client.o source.o morse.o
+_OBJ_SERVER = server.o delay.o morse.o
+_OBJ_CLIENT = client.o delay.o morse.o
 
 TFLAGS=-std=gnu99 -g -Wall -pedantic
 
@@ -40,9 +38,9 @@ $(ODIR)/%.o: %.c $(DEPS)
 .PHONY: all
 all: start server client bench
 
+# Compile command for bench
 bench: $(OBJ_BENCH)
 	$(CC) -o bench $^ $(TFLAGS)
-
 
 # Compile command for start
 start: $(OBJ)
@@ -59,4 +57,4 @@ client: $(OBJ_CLIENT)
 # clean
 .PHONY: clean
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ start server client test
+	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ start server client bench

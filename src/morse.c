@@ -1,6 +1,5 @@
-#include "header.h"
-#include <assert.h>
-#include <string.h>
+#include "morse.h"
+
 /**
  * 
  * Functions needed to convert between characters
@@ -198,7 +197,6 @@ int sendCharInMorse(char a, pid_t target, int log_fd)
     return(0);
 }
 
-// readCharOfMorse
 char readCharOfMorse(volatile int* char_index, volatile int* char_ready)
 {
     char a = 0;

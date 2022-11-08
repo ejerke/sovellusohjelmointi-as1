@@ -1,4 +1,4 @@
-#include "header.h"
+#include "client.h"
 
 static char received_text[BLOCKSIZE];
 static int received_i;
@@ -77,6 +77,9 @@ int main(int argc, char **argv)
 				write(log_fd, "**Write failed\n", 15);
 			else if ( res == 0 )
 				break;
+			sprintf(log_str, "**Wrote %d bytes to output\n", res);
+			write(log_fd, log_str, strlen(log_str));
+
 			received_i -= res;
 			written_i += res;
 		}
@@ -91,9 +94,6 @@ int main(int argc, char **argv)
     return(0);
 }
 
-
-
-// Handle signals sent by parent to child
 void sighandler_client(int sig)
 {
 	switch(sig)
@@ -110,6 +110,5 @@ void sighandler_client(int sig)
 		case SIGINT:
 			should_continue = 0;
 			break;
-		// kill(getppid(), SIGALRM);
 	}
 }
