@@ -111,5 +111,6 @@ void sighandler_client(int sig)
 		case SIGINT:
 			should_continue = 0;
 			break;
+		// kill(getppid(), SIGALRM);
 	}
 }

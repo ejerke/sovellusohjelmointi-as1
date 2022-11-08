@@ -191,9 +191,11 @@ int sendCharInMorse(char a, pid_t target, int log_fd)
             break;
         }
         delay_micro(DEFAULT_KILL_DELAY);
+        // pause();
         i++;
     }
     kill(target, SIGALRM); // Send always at least character end.
+    // pause();
     delay_micro(DEFAULT_KILL_DELAY);
 
     return(0);

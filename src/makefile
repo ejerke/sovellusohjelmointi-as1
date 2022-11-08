@@ -1,6 +1,6 @@
 # Compiler version and flags
 CC=gcc
-CFLAGS= -O2 -Wall -pedantic -I $(IDIR)
+CFLAGS= -std=gnu99 -g -Wall -pedantic -I $(IDIR)
 
 
 PROGRAM=start

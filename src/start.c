@@ -26,10 +26,12 @@ int main(int argc,char **argv) {
 
     if ( child_pid == 0 ) // In Client
     {
+        // Name the executable
+        char client_exec[] = "./client";
+
         //                     ifd   log
         char* client_args[] = {NULL, NULL, NULL};
 
-        char client_exec[] = "./client";
         // log
         client_args[1] = log;
 

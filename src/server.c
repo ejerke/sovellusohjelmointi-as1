@@ -16,7 +16,8 @@ int main(int argc, char **argv)
 	act.sa_flags = 0;
 
 	sigaction(SIGINT, &act, NULL);
-	sigaction(SIGCHLD, &act, NULL); /* Child uses to indicate being ready */
+	sigaction(SIGCHLD, &act, NULL); /* Child uses to indicate wanting more time */
+	sigaction(SIGALRM, &act, NULL); /* Child uses to indicate being ready */
 
     // Read commandline arguments to numbers.
     int child_pid, ifd, log_fd;
@@ -60,7 +61,7 @@ int main(int argc, char **argv)
     // while ( !child_ready )
     //     ;
     // Wait a bit to make sure client is ready first.
-    delay_micro(100000);
+    delay_micro(2000);
     while ( should_continue )
     {
         read_size = read(ifd,buf,BLOCKSIZE);
@@ -96,7 +97,7 @@ void sighandler_server(int sig)
         should_continue = 0;
         break;
     case SIGCHLD:
-        delay_micro(1000);
+        delay_micro(2000);
         break;
     }
 }
