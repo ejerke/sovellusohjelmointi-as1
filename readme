@@ -9,4 +9,6 @@ valinnaisia, joista outputin lacuna-arvo on STDOUT ja login on log.txt.
 Saatavilla on myös as1_testbench executablena "bench", johon olen tehnyt muutokset, jotka 
 tarkemmin oppimispäiväkirjassa päivän 8.11. kohdalla. Delayt ovat tosiaan sen verran pienillä 
 marginaaleilla, että en suosittele tekemään mitään muuta siloin, kun testi suorittaa. Ilman
-erittäin pitkiä testejä niiden pitäisi kuitenkin kestää vain noin minuutin.
+erittäin pitkiä testejä suorittaminen kestää n. 1 min. Välillä kääntämisen jälkeen ensimmäinen
+suorituskerta aiheuttaa segmentation faultin. Uskoisin tämän johtuvan jotenkin filejen avaamisesta,
+sillä se ei toistu.
